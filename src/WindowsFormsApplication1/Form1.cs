@@ -601,7 +601,6 @@ namespace WindowsFormsApplication1
         {
             // OpenFileDialog の新しいインスタンスを生成する (デザイナから追加している場合は必要ない)
             OpenFileDialog dialog = new OpenFileDialog();
-
             dialog.Title = "xmlを追加";
             dialog.Filter = "xmlファル|*.xml";
             dialog.Multiselect = false;
