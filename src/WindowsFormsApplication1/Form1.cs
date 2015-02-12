@@ -466,7 +466,7 @@ namespace WindowsFormsApplication1
         private void ButtonAutoAddDrafts_Click(object sender, EventArgs e)
         {
             //MessageBox.Show("hoge");
-            ListboxFiles.Items.Add("\\\\andromeda\\share1\\STARO\\CAD\\JAXON1\\common_parts\\harmonic\\CSD25\\dft\\CSD25-cap.dft");
+            //ListboxFiles.Items.Add("\\\\andromeda\\share1\\STARO\\CAD\\JAXON1\\common_parts\\harmonic\\CSD25\\dft\\CSD25-cap.dft");
             // ListboxFiles.Items.Add(TextboxAutoLoadSetting.Text);
             GetPartsPath();
         }
@@ -480,11 +480,12 @@ namespace WindowsFormsApplication1
         private void GetPartsPathFromXml()
         {
             //if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
-            string fn = "C:\\Users\\k-kojima\\Google ドライブ\\Documents\\JSK\\STARO\\test.xml"; //ロードするpartファイルの一覧を書いたxm
+            //string fn = "C:\\Users\\k-kojima\\Google ドライブ\\Documents\\JSK\\STARO\\test.xml"; //ロードするpartファイルの一覧を書いたxml
+            string fn = TextboxAutoLoadSetting.Text; //ロードするpartファイルの一覧を書いたxml
             //textBox1.Text = fn;
             if (System.IO.File.Exists(fn))
             {
-                MessageBox.Show("open "+fn);
+                //MessageBox.Show("open "+fn);
                 XmlTextReader reader = null;
                 try
                 {
@@ -498,7 +499,11 @@ namespace WindowsFormsApplication1
                             {
                                 case "Cell":
                                     reader.Read();
-                                    MessageBox.Show(reader.ReadString());
+                                    //MessageBox.Show(reader.ReadString());
+                                    if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "Data")
+                                    {
+                                        ListboxFiles.Items.Add(reader.ReadString());
+                                    }
                                     break;
                             }
                         }
@@ -559,14 +564,14 @@ namespace WindowsFormsApplication1
             {
                 if (debug) MessageBox.Show(s[0]);
                 string ext = System.IO.Path.GetExtension(s[0]);
-                if (ext == ".dft")
+                if (ext == ".xml")
                 {
                     TextboxAutoLoadSetting.Text = s[0];
                 }
                 else if (ext == ".lnk")
                 {
                     string filename = ResolveShorcut(s[0]);
-                    if (System.IO.Path.GetExtension(filename) == ".dft")
+                    if (System.IO.Path.GetExtension(filename) == ".xml")
                     {
                         TextboxAutoLoadSetting.Text = s[0];
                     }
@@ -580,6 +585,22 @@ namespace WindowsFormsApplication1
                 e.Effect = DragDropEffects.All;
             else
                 e.Effect = DragDropEffects.None;
+        }
+
+        private void ButtonSelectAutoLoadSetting_Click(object sender, EventArgs e)
+        {
+            // OpenFileDialog の新しいインスタンスを生成する (デザイナから追加している場合は必要ない)
+            OpenFileDialog dialog = new OpenFileDialog();
+
+            dialog.Title = "xmlを追加";
+            dialog.Filter = "xmlファル|*.xml";
+            dialog.Multiselect = false;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                TextboxAutoLoadSetting.Text = dialog.FileName;
+            }
+            dialog.Dispose();
         }
     }
 }

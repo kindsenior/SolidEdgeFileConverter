@@ -242,6 +242,7 @@
             this.ButtonSelectAutoLoadSetting.TabIndex = 16;
             this.ButtonSelectAutoLoadSetting.Text = "選択";
             this.ButtonSelectAutoLoadSetting.UseVisualStyleBackColor = true;
+            this.ButtonSelectAutoLoadSetting.Click += new System.EventHandler(this.ButtonSelectAutoLoadSetting_Click);
             // 
             // label2
             // 
