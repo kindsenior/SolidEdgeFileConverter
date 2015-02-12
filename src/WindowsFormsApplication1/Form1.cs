@@ -502,7 +502,17 @@ namespace WindowsFormsApplication1
                                     //MessageBox.Show(reader.ReadString());
                                     if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "Data")
                                     {
-                                        ListboxFiles.Items.Add(reader.ReadString());
+                                        //ListboxFiles.Items.Add(reader.ReadString());
+                                        string draftFileName= "";
+                                        string partFileName = reader.ReadString();
+                                        string[] dirNames = partFileName.Split('\\');
+                                        for (int i = 0; i < dirNames.Length - 1; ++i)
+                                        {
+                                            draftFileName += dirNames[i] + '\\';
+                                        }
+                                        draftFileName += "dft\\" + dirNames[dirNames.Length - 1];
+                                        draftFileName = System.IO.Path.ChangeExtension(draftFileName,null) +".dft";
+                                        ListboxFiles.Items.Add(draftFileName);
                                     }
                                     break;
                             }
