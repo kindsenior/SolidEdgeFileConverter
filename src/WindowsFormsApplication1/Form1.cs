@@ -497,10 +497,10 @@ namespace WindowsFormsApplication1
                         {
                             switch (reader.LocalName)
                             {
-                                case "Cell":
+                                case "Data":
                                     reader.Read();
                                     //MessageBox.Show(reader.ReadString());
-                                    if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "Data")
+                                    if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "Font")
                                     {
                                         //ListboxFiles.Items.Add(reader.ReadString());
                                         string draftFileName= "";
