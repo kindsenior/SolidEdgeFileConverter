@@ -465,27 +465,20 @@ namespace WindowsFormsApplication1
 
         private void ButtonAutoAddDrafts_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show("hoge");
-            //ListboxFiles.Items.Add("\\\\andromeda\\share1\\STARO\\CAD\\JAXON1\\common_parts\\harmonic\\CSD25\\dft\\CSD25-cap.dft");
-            // ListboxFiles.Items.Add(TextboxAutoLoadSetting.Text);
-            GetPartsPath();
+            GetDraftPath();
         }
 
-        private void GetPartsPath()
+        private void GetDraftPath()
         {
-            //GetPartsPathFromGDrive();
-            GetPartsPathFromXml();
+            GetDraftPathFromXml();
         }
 
-        private void GetPartsPathFromXml()
+        private void GetDraftPathFromXml()
         {
-            //if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
-            //string fn = "C:\\Users\\k-kojima\\Google ドライブ\\Documents\\JSK\\STARO\\test.xml"; //ロードするpartファイルの一覧を書いたxml
             string fn = TextboxAutoLoadSetting.Text; //ロードするpartファイルの一覧を書いたxml
-            //textBox1.Text = fn;
+
             if (System.IO.File.Exists(fn))
             {
-                //MessageBox.Show("open "+fn);
                 XmlTextReader reader = null;
                 try
                 {
@@ -500,19 +493,13 @@ namespace WindowsFormsApplication1
                                 case "Data":
                                     reader.Read();
                                     //MessageBox.Show(reader.ReadString());
-                                    if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "Font")
+                                    if (reader.NodeType == XmlNodeType.Element && reader.LocalName == "Font" )
                                     {
-                                        //ListboxFiles.Items.Add(reader.ReadString());
-                                        string draftFileName= "";
                                         string partFileName = reader.ReadString();
-                                        string[] dirNames = partFileName.Split('\\');
-                                        for (int i = 0; i < dirNames.Length - 1; ++i)
+                                        if (partFileName != "")
                                         {
-                                            draftFileName += dirNames[i] + '\\';
+                                            ListboxFiles.Items.Add(System.IO.Path.GetDirectoryName(partFileName) + "\\dft\\" + System.IO.Path.GetFileNameWithoutExtension(partFileName) + ".dft");
                                         }
-                                        draftFileName += "dft\\" + dirNames[dirNames.Length - 1];
-                                        draftFileName = System.IO.Path.ChangeExtension(draftFileName,null) +".dft";
-                                        ListboxFiles.Items.Add(draftFileName);
                                     }
                                     break;
                             }
@@ -528,43 +515,6 @@ namespace WindowsFormsApplication1
                     reader.Close();
                 }
             }
-        }
-
-        private void GetPartsPathFromGDrive()
-        {
-            string CLIENT_ID = "1006233954353-1cauii1ksqvmip6kttlt2h9ku6hhpa4o.apps.googleusercontent.com";
-            string CLIENT_SECRET = "vhA55KV3ZQTVKbbKVS5z41pi";
-            string SCOPE = "https://www.googleapis.com/auth/drive";
-            string REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
-
-            OAuth2Parameters parameters = new OAuth2Parameters();
-            parameters.ClientId = CLIENT_ID;
-            parameters.ClientSecret = CLIENT_SECRET;
-            parameters.RedirectUri = REDIRECT_URI;
-            parameters.Scope = SCOPE;
-
-            string authorizationUrl = OAuthUtil.CreateOAuth2AuthorizationUrl(parameters);
-            Console.WriteLine(authorizationUrl);
-            Console.WriteLine("Please visit the URL above to authorize your OAuth request token.  Once that is complete, type in your access code to continue...");
-            //parameters.AccessCode = Console.ReadLine();
-            parameters.AccessCode = "4/cJEyyVoq1229HtbbOfBqXjsegoz5k53-6-RL4gemyUE.UoWrJm537xcYBrG_bnfDxpIASUjxlgI";
-            
-            OAuthUtil.GetAccessToken(parameters);
-            string accessToken = parameters.AccessToken;
-            Console.WriteLine("OAuth Access Token: " + accessToken);
-
-            GOAuth2RequestFactory requestFactory = new GOAuth2RequestFactory(null, "MySpreadsheetIntegration-v1", parameters);
-            SpreadsheetsService service = new SpreadsheetsService("MySpreadsheetIntegration-v1");
-            service.RequestFactory = requestFactory;
-
-            SpreadsheetQuery query = new SpreadsheetQuery();
-            SpreadsheetFeed feed = service.Query(query);
-            foreach (SpreadsheetEntry entry in feed.Entries)
-            {
-                // Print the title of this spreadsheet to the screen
-                Console.WriteLine(entry.Title.Text);
-            }
-
         }
 
         private void TextboxAutoLoadSetting_DragDrop(object sender, DragEventArgs e)
